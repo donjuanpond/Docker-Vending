@@ -4,7 +4,7 @@ import cv2
 from PIL import Image
 import tempfile
 
-def _display_detected_frames(conf, model, st_frame, image):
+def _display_detected_frames(conf, model, st_frame, image, box_b, box_r):
     """
     Display the detected objects on a video frame using the YOLOv8 model.
     :param conf (float): Confidence threshold for object detection.
@@ -34,8 +34,10 @@ def _display_detected_frames(conf, model, st_frame, image):
         elif pred == 1:
             num_red += 1
 
-    st.subheader(f"Number of brown: {num_brown}")
-    st.subheader(f"Number of red: {num_red}")
+    
+    box_b.subheader(f"Number of brown: {num_brown}")
+    box_r.subheader(f"Number of red: {num_red}")
+    
 
 
 @st.cache_resource
@@ -124,13 +126,17 @@ def infer_uploaded_video(conf, model):
                     vid_cap = cv2.VideoCapture(
                         tfile.name)
                     st_frame = st.empty()
+                    b1 = st.empty()
+                    b2 = st.empty()
                     while (vid_cap.isOpened()):
                         success, image = vid_cap.read()
                         if success:
                             _display_detected_frames(conf,
                                                      model,
                                                      st_frame,
-                                                     image
+                                                     image,
+                                                     b1,
+                                                     b2
                                                      )
                         else:
                             vid_cap.release()
@@ -152,6 +158,8 @@ def infer_uploaded_webcam(conf, model):
         )
         vid_cap = cv2.VideoCapture(0)  # local camera
         st_frame = st.empty()
+        b1 = st.empty()
+        b2 = st.empty()
         while not flag:
             success, image = vid_cap.read()
             if success:
@@ -159,7 +167,9 @@ def infer_uploaded_webcam(conf, model):
                     conf,
                     model,
                     st_frame,
-                    image
+                    image,
+                    b1,
+                    b2
                 )
             else:
                 vid_cap.release()
@@ -187,7 +197,7 @@ def main():
     st.title("Interactive Interface for YOLOv8")
 
     # load pretrained DL model
-    model = load_model('/content/Vending-YOLOv8n.onnx')
+    model = load_model('/code/Vending-YOLOv8n.onnx')
 
     # image/video options
     st.sidebar.header("Image/Video Config")
