@@ -1,4 +1,6 @@
 # Docker-Vending
+DOCKERHUB AT https://hub.docker.com/repository/docker/donjuanpond/vending-streamlit/general
+
 Vending machine item detection in a docker container. Running it creates a Streamlit app to interface with the YOLOv8n model.
 
 To pull the docker container image, run `docker pull donjuanpond/vending-streamlit`. Alternatively, if for some reason you want to build it on your end, you can download the zip of the repo and, upon `cd`ing inside the folder, run `docker build -t vending-streamlit -f deploy-vending.dockerfile .`.
