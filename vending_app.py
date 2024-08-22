@@ -3,6 +3,7 @@ import streamlit as st
 import cv2
 from PIL import Image
 import tempfile
+import time
 
 def _display_detected_frames(conf, model, st_frame, image, box_b, box_r):
     """
@@ -13,6 +14,7 @@ def _display_detected_frames(conf, model, st_frame, image, box_b, box_r):
     :param image (numpy array): A numpy array representing the video frame.
     :return: None
     """
+    t1 = time.time()
     # Resize the image to a standard size
     image = cv2.resize(image, (720, int(720 * (9 / 16))))
 
@@ -33,10 +35,11 @@ def _display_detected_frames(conf, model, st_frame, image, box_b, box_r):
             num_brown += 1
         elif pred == 1:
             num_red += 1
-
+    t2 = time.time()
     
     box_b.subheader(f"Number of brown: {num_brown}")
     box_r.subheader(f"Number of red: {num_red}")
+    box_r.text(f"Time: {t2-t1:.4f}s") 
     
 
 
@@ -78,7 +81,7 @@ def infer_uploaded_image(conf, model):
                 caption="Uploaded Image",
                 use_column_width=True
             )
-
+    t1 = time.time()
     if source_img:
         if st.button("Execution"):
             with st.spinner("Running..."):
@@ -96,11 +99,13 @@ def infer_uploaded_image(conf, model):
                         num_red += 1
 
                 with col2:
+                    t2 = time.time()
                     st.image(res_plotted,
                              caption="Detected Image",
                              use_column_width=True)
                     st.subheader(f"Number of brown: {num_brown}")
                     st.subheader(f"Number of red: {num_red}")
+                    st.text(f"Time: {t2-t1:.4f}s")
 
 
 def infer_uploaded_video(conf, model):
